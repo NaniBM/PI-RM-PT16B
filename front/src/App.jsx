@@ -1,53 +1,70 @@
+import { useEffect, useState } from 'react';
 import './App.css';
 import Cards from './components/Cards.jsx';
-import NavBar from './components/nav_bar/Navbar';
-import { useState } from 'react';
+import Nav from './components/Nav/Nav';
+import SearchBar from './components/SearchBar.jsx';
+// import character, { Rick } from './data.js';
 import axios from 'axios';
+import data from './data';
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import About from './components/about/About';
+import Detail from './components/detail/Detail';
+import Form from './components/form/Form';
 
-const API_KEY = 'pi-hx-aquintero'
 
 function App() {
 
-   const [characters, setCharacters] = useState([])
+   const [characters, setCharacters] = useState([]);
 
-   // const example = {
-   //    id: 1,
-   //    name: 'Rick Sanchez',
-   //    status: 'Alive',
-   //    species: 'Human',
-   //    gender: 'Male',
-   //    origin: {
-   //       name: 'Earth (C-137)',
-   //       url: 'https://rickandmortyapi.com/api/location/1',
-   //    },
-   //    image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-   // };
+   //Login
+   const [access, setAccess] = useState(false)
+   const EMAIL =  'myEmail@mail.com'
+   const PASSWORD = 'asdfgterh1'
 
-   // const onSearch = (char) => {
-   //    setCharacters([...characters, char])
-   // }
+   const navigate = useNavigate();
+   function login(userData) {
+      if (userData.password === PASSWORD && userData.email === EMAIL) {
+         setAccess(true);
+         navigate('/home');
+      } else {
+         alert('Usuario o pass invalidos')
+      }
+   }
 
    function onSearch(id) {
-      axios(`https://rym2.up.railway.app/api/character/${id}?key=${API_KEY}`).then(
-         ({ data }) => {
-            if (data.name) {
-               setCharacters((oldChars) => [...oldChars, data]);
-            } else {
-               window.alert('¡No hay personajes con este ID!');
-            }
+      axios(`https://rickandmortyapi.com/api/character/${id}`).then(({ data }) => {
+         if (data?.name) {
+            setCharacters((oldChars) => [...oldChars, data]);
+         } else {
+            window.alert('¡No hay personajes con este ID!');
          }
-      );
+      })
    }
 
-   const onClose = (id) => {
-      const filteredList = characters.filter((character)=>character.id !== parseInt(id))
-      setCharacters(filteredList)
+   function onClose(id) {
+      const newCharacters = characters.filter(char => char.id !== id);
+      setCharacters(newCharacters)
    }
+   const { pathname } =  useLocation()
+
+   // useEffect(() => {
+   //    !access && navigate('/');
+   // }, [access]);
 
    return (
       <div className='App'>
-         <NavBar onSearch={onSearch}/>
-         <Cards characters={characters} onClose={onClose}/>
+         {pathname !== "/" && <Nav onSearch={onSearch}/>}
+         <Routes>
+            <Route path = "/" element={<Form login={login}/>}/>
+            <Route path = "/home" element={
+               <Cards
+               characters={characters}
+               onClose={onClose} 
+               />}>
+            </Route>
+            <Route path = "/about" element={<About/>}/>
+            <Route path = "/detail/:id" element={<Detail/>}></Route>
+         </Routes>
       </div>
    );
 }

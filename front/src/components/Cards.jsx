@@ -1,25 +1,32 @@
-import Card from './Card';
+import Card from './card/Card';
+import styled from "styled-components"
 
+
+const DivContainter = styled.div`
+   display: flex;
+   flex-wrap: wrap;
+`
 export default function Cards({ characters, onClose }) {
-
    return (
-      <div>
-        
+      <DivContainter>
          {
-            characters.map((el)=>(
-               <Card
-                  key={el.id}
-                  id={el.id}
-                  name={el.name}
-                  status={el.status}
-                  species={el.species}
-                  gender={el.gender}
-                  origin={el.origin.name}
-                  image={el.image}
-                  onClose={onClose}
-               />
-            ))
+            characters.map(({ id, name, status, species, 
+               gender, origin, image }, index) =>  {
+               return(
+                  <Card 
+                    key={id} 
+                    id={id} 
+                    name={name} 
+                    status={status} 
+                    species={species} 
+                    gender={gender} 
+                    image={image} 
+                    origin={origin.name} 
+                    onClose={onClose}
+                  />
+               )
+            })
          }
-      </div>
+      </DivContainter>
    )
 }
