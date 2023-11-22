@@ -51,19 +51,22 @@ function Card(
 
    return (
       <div className={style.card} key={id}>
-         <div>
-            <button className={style.boton} onClick={() => onClose(id)}>Close carta {id}</button>
+            <span>{id}</span>
+         <div className={style.close_button_row}>
+            <button className={style.close_button} onClick={() => onClose(id)}>x</button>
          </div>
          <div className={style.info}>
-         {
-            isFav ? (
-               <button onClick={handleFavorite}>❤️</button>
-            ) : (
-               <button onClick={handleFavorite}>🤍</button>
-            )
-         }
-            <Link to={`/detail/${id}`} >
-               <h3 className="card-name">{name}</h3>
+            <div className={style.fav_card}>
+               {
+                  isFav ? (
+                     <button onClick={handleFavorite} className={style.fav_boton}>❤️</button>
+                  ) : (
+                     <button onClick={handleFavorite} className={style.fav_boton}>🤍</button>
+                  )
+               }
+            </div>
+            <Link to={`/detail/${id}`} style={{textDecoration: 'none'}}>
+               <h3 className={style.card_name}>{name}</h3>
             </Link>
             <h2>Estado: {status}</h2>
             <h2>Especie: {species}</h2>
