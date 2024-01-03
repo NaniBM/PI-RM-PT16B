@@ -32,25 +32,49 @@ function App() {
    //    }
    // }
 
-   function login(userData) {
-      const { email, password } = userData;
-      const URL = 'http://localhost:3001/rickandmorty/login/';
-      axios(URL + `?email=${email}&password=${password}`).then(({ data }) => {
+   async function login(userData) {
+      try {
+         const { email, password } = userData;
+         const URL = 'http://localhost:3001/rickandmorty/login/';
+         const { data } = await axios(URL + `?email=${email}&password=${password}`)
          const { access } = data;
          setAccess(data);
-         access && navigate('/home');
-      });
+         access ? navigate('/home') : window.alert("Invalid User or Password")
+      } catch (error) {
+         window.alert(error.response.data)
+      }
    }
 
-   function onSearch(id) {
-      axios(`http://localhost:3001/rickandmorty/character/${id}`).then(({ data }) => {
-         if (data?.name) {
-            setCharacters((oldChars) => [...oldChars, data]);
-         } else {
-            window.alert('¡No hay personajes con este ID!');
-         }
-      }).catch(() => window.alert('No hay personajes con ese ID'));
+
+   // function login(userData) {
+   //    const { email, password } = userData;
+   //    const URL = 'http://localhost:3001/rickandmorty/login/';
+   //    axios(URL + `?email=${email}&password=${password}`).then(({ data }) => {
+   //       const { access } = data;
+   //       setAccess(data);
+   //       access && navigate('/home');
+   //    });
+   // }
+
+   async function onSearch(id) {
+      const url = `http://localhost:3001/rickandmorty/character/${id}`
+      try {
+         const { data } = await axios.get(url);
+         setCharacters((oldChars) => [...oldChars, data]);
+      } catch (error) {
+         window.alert(error.response.data)
+      }
    }
+
+   // function onSearch(id) {
+   //    axios(`http://localhost:3001/rickandmorty/character/${id}`).then(({ data }) => {
+   //       if (data?.name) {
+   //          setCharacters((oldChars) => [...oldChars, data]);
+   //       } else {
+   //          window.alert('¡No hay personajes con este ID!');
+   //       }
+   //    }).catch(() => window.alert('No hay personajes con ese ID'));
+   // }
 
    function onClose(id) {
       const newCharacters = characters.filter(char => char.id !== id);
