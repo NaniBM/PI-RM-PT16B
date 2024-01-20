@@ -41,7 +41,7 @@ function App() {
          setAccess(data);
          access ? navigate('/home') : window.alert("Invalid User or Password")
       } catch (error) {
-         window.alert(error.response.data)
+         window.alert(error.response.data.message)
       }
    }
 
